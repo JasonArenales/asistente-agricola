@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asistente Agrícola Inteligente</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-50 font-sans text-gray-800 p-4">
+  <div class="max-w-md mx-auto">
+    <h1 class="text-2xl font-bold text-center mb-4">Asistente Agrícola</h1>
+
+    <div class="bg-white p-4 rounded-xl shadow-md"> 
+      <! este bloque es para la parte de subir imagenes y clasificarlas -->
+        <label class="block mt-4 mb-2 font-semibold">📸 Subir imagen de hoja</label>
+        <input type="file" accept="image/*" onchange="mostrarImagen(event)" class="mb-2" />
+        <img id="vistaPrevia" class="w-full rounded-xl mb-2 hidden" />
+
+        <button onclick="clasificarHoja()" class="w-full bg-orange-600 text-white py-2 rounded-xl hover:bg-orange-700">
+        Clasificar hoja
+        </button>
+
+      <p class="mb-2">Toma una acción:</p>
+
+      <button onclick="predecirSalud()" class="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700 mb-2">
+        Evaluar salud del cultivo
+      </button>
+
+      <button onclick="recomendarAccion()" class="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 mb-2">
+        Recomendar acción agrícola
+      </button>
+
+      <button onclick="hablarConAsistente()" class="w-full bg-purple-600 text-white py-2 rounded-xl hover:bg-purple-700">
+        Hablar con el asistente
+      </button>
+
+      <div id="resultado" class="mt-4 p-2 bg-gray-100 rounded"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
