@@ -1,23 +1,102 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+     <!--para mejorar el diseño -->
+    <script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/js/all.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Asistente Agrícola Inteligente</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-green-50 font-sans text-gray-800 p-4">
-  <div class="max-w-md mx-auto">
-    <h1 class="text-2xl font-bold text-center mb-4">Asistente Agrícola</h1>
+    <!-- SIMULACIÓN DE SENSORES (ESTO SERÁ REEMPLAZADO CON DATOS REALES EN PRODUCCIÓN) -->
+<div class="p-4 bg-green-100 rounded-xl shadow-md text-center max-w-md mx-auto mt-6">
+  <h2 class="text-xl font-bold mb-4">📡 Datos del Cultivo (Simulados)</h2>
+  <div id="sensorData" class="space-y-2 text-lg">
+    <p>🌡️ Temperatura: <span id="temp">--</span> °C</p>
+    <p>💧 Humedad: <span id="hum">--</span> %</p>
+    <p>🌫️ CO₂: <span id="co2">--</span> ppm</p>
+  </div>
+</div>
+<!-- hasta aqui llega el bloque de la simulación -->
+
+<!-- desde aquí comienza el bloque de simulación del chatbot -->
+ <div class="p-4 bg-white rounded-xl shadow-md mt-6">
+  <h2 class="text-xl font-bold mb-4">🤖 Asistente Agrícola Inteligente</h2>
+  <div id="chatBox" class="border h-40 overflow-y-auto p-2 rounded mb-2 bg-gray-50 text-sm"></div>
+  <div class="flex gap-2">
+    <input id="userInput" type="text" placeholder="Escribe tu pregunta..." class="border rounded px-3 py-2 w-full" />
+    <button onclick="responder()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Enviar</button><button onclick="activarVoz()" style="margin-top: 10px; padding: 8px; font-size: 16px;">
+  🎤 Hablar con AsistenteAgro
+</button>
+  </div>
+</div>
+
+<script>
+let asistenteActivado = false;
+
+function responder() {
+  const input = document.getElementById("userInput");
+  const chat = document.getElementById("chatBox");
+  const pregunta = input.value.trim();
+  if (pregunta === "") return;
+
+  chat.innerHTML += `<div><strong>Tú:</strong> ${pregunta}</div>`;
+  const lower = pregunta.toLowerCase();
+  
+  let respuesta = "";
+
+  // Si el usuario pregunta "Tengo una pregunta AsistenteAgro", siempre mostramos el menú
+  if (lower.includes("tengo una pregunta") && /asistente\s?agro/i.test(lower)) {
+    asistenteActivado = true; // Activamos el asistente
+    respuesta = `
+      ¡Claro! ¿En qué te puedo ayudar?<br/>
+      Puedes preguntarme sobre:<br/>
+      • Información del frijol<br/>
+      • Fertilizantes<br/>
+      • Agua o riego<br/>
+      • Plagas o insectos<br/>
+      • Abonos o fertilización
+    `;
+  } else if (asistenteActivado) {
+    // Analiza preguntas cuando el asistente ya está activado
+    if (lower.includes("frijol") && lower.includes("fertilizante")) {
+      respuesta = "Para el frijol se recomienda fertilizantes ricos en fósforo como 10-20-20 o 15-30-15.";
+    } else if (lower.includes("frijol")) {
+      respuesta = "El frijol necesita suelos bien drenados y no tolera encharcamientos. Es sensible al exceso de nitrógeno.";
+    } else if (lower.includes("fertilizante")) {
+      respuesta = "Los fertilizantes deben aplicarse según el análisis del suelo y el tipo de cultivo. ¿Para qué cultivo necesitas?";
+    } else if (lower.includes("riego") || lower.includes("agua")) {
+      respuesta = "El riego depende del tipo de cultivo y clima. Se recomienda monitorear la humedad del suelo.";
+    } else if (lower.includes("plaga") || lower.includes("insecto")) {
+      respuesta = "Puedes usar control biológico o insecticidas naturales como neem para controlar plagas.";
+    } else if (lower.includes("abono") || lower.includes("fertilización")) {
+      respuesta = "La fertilización debe hacerse según la etapa del cultivo y análisis del suelo.";
+    } else {
+      respuesta = "Lo siento, no tengo una respuesta para eso aún.";
+    }
+  } else {
+    respuesta = "Para empezar, escribe: 'Tengo una pregunta AsistenteAgro'";
+  }
+
+  chat.innerHTML += `<div><strong>Asistente:</strong> ${respuesta}</div>`;
+  chat.scrollTop = chat.scrollHeight;
+  input.value = "";
+}
+
+</script>
+<!-- hasta aquí es el bloque de simulación del chatbot que luego se reemplazará con un API de chatgpt -->
 
     <div class="bg-white p-4 rounded-xl shadow-md"> 
-      <! este bloque es para la parte de subir imagenes y clasificarlas -->
+      <!-- este bloque es para la parte de subir imagenes y clasificarlas -->
         <label class="block mt-4 mb-2 font-semibold">📸 Subir imagen de hoja</label>
         <input type="file" accept="image/*" onchange="mostrarImagen(event)" class="mb-2" />
         <img id="vistaPrevia" class="w-full rounded-xl mb-2 hidden" />
 
-        <button onclick="clasificarHoja()" class="w-full bg-orange-600 text-white py-2 rounded-xl hover:bg-orange-700">
-        Clasificar hoja
+        <button onclick="clasificarHoja()" class="w-full bg-orange-600 text-white py-2 rounded-xl hover:bg-orange-700"><i class="fas fa-seedling mr-2"></i> Clasificar hoja
+
         </button>
 
       <p class="mb-2">Toma una acción:</p>
@@ -39,5 +118,59 @@
   </div>
 
   <script src="script.js"></script>
+  <script>
+  // FUNCIONES DE SIMULACIÓN — en el futuro esto se conectará a sensores reales vía ESP32 o base de datos
+  function generarValor(min, max) {
+    return (Math.random() * (max - min) + min).toFixed(1);
+  }
+
+  function actualizarSensores() {
+    document.getElementById('temp').textContent = generarValor(20, 35); // <-- aquí irá lectura real
+    document.getElementById('hum').textContent = generarValor(40, 90);  // <-- aquí también
+    document.getElementById('co2').textContent = generarValor(300, 800); // <-- aquí también
+  }
+
+  setInterval(actualizarSensores, 5000);
+  actualizarSensores();
+</script>
+<!--termina el bloque de simulación-->
+
+
+<!--aqui comienza el bloque para la parte de activar el botón de voz-->
+
+<script>
+function activarVoz() {
+  if (!('webkitSpeechRecognition' in window)) {
+    alert("Tu navegador no soporta reconocimiento de voz.");
+    return;
+  }
+
+  const reconocimiento = new webkitSpeechRecognition();
+  reconocimiento.lang = "es-ES"; // idioma español
+  reconocimiento.interimResults = false;
+  reconocimiento.maxAlternatives = 1;
+
+  reconocimiento.start();
+
+  reconocimiento.onstart = () => {
+    console.log("Escuchando...");
+  };
+
+  reconocimiento.onresult = (event) => {
+    const texto = event.results[0][0].transcript;
+    document.getElementById("userInput").value = texto;
+    responder(); // llama al chatbot como si se hubiera escrito
+  };
+
+  reconocimiento.onerror = (event) => {
+    alert("Error al reconocer voz: " + event.error);
+  };
+
+  reconocimiento.onend = () => {
+    console.log("Finalizó el reconocimiento de voz.");
+  };
+}
+</script>
+<!--aqui termina el bloque para la parte de activar el botón de voz-->
 </body>
 </html>

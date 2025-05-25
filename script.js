@@ -14,7 +14,7 @@ function hablarConAsistente() {
   window.speechSynthesis.speak(speech);
 }
 
-//aqui es para mostrar la imagen esta función y la que sigue abajo
+//aqui es para mostrar la imagen esta función y la que sigue
 function mostrarImagen(event) {
   const vista = document.getElementById("vistaPrevia");
   vista.src = URL.createObjectURL(event.target.files[0]);
